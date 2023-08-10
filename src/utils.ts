@@ -1,5 +1,16 @@
-import { PossibleWins } from "./constants";
 import { Board, Cell, Player } from "./types";
+
+export const POSSIBLE_WINS = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+] as const;
+
 export function matches(a: Cell, b: Cell, c: Cell) {
   if (a === null) return false;
   if (b !== a) return false;
@@ -8,8 +19,7 @@ export function matches(a: Cell, b: Cell, c: Cell) {
 }
 
 export function checkBoard(board: Board): [number, number, number] | null {
-  for (let i = 0; i < PossibleWins.length; i++) {
-    const [a, b, c] = PossibleWins[i];
+  for (const [a, b, c] of POSSIBLE_WINS) {
     const thereIsAMatch = matches(board[a], board[b], board[c]);
     if (thereIsAMatch) {
       return [a, b, c];

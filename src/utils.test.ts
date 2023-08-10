@@ -17,10 +17,31 @@ describe("getBestMove", () => {
 
   test("can block a winning move", () => {
     //prettier-ignore
-    const board = [ x, _, x, 
-                    _, o, _, 
+    const board = [ x, _, x,
+                    _, o, _,
                     _, _, _ ];
     const expected = 1;
+    const result = getBestMove(board, o);
+    expect(result).toEqual(expected);
+  });
+
+  test("prefers a winning move to a blocking move", () => {
+    //prettier-ignore
+    const board = [ x, _, x,
+                    _, o, _,
+                    x, o, _ ];
+    const expected = 1;
+    const result = getBestMove(board, o);
+    expect(result).toEqual(expected);
+  });
+
+  test("chooses randomly when cannot decide", () => {
+    jest.spyOn(Math, "random").mockReturnValue(0.5);
+    //prettier-ignore
+    const board = [ x, _, _,
+                    _, _, _,
+                    _, _, _ ];
+    const expected = 5;
     const result = getBestMove(board, o);
     expect(result).toEqual(expected);
   });

@@ -1,11 +1,10 @@
 import React from "react";
-import { PossibleWins } from "./constants";
-import { checkBoard, matches } from "./utils";
-import { Cell } from "./types";
+import { checkBoard } from "./utils";
+import { Cell, Player } from "./types";
 import "./App.css";
 
 export default function App() {
-  const [turn, setTurn] = React.useState<Cell>("X");
+  const [turn, setTurn] = React.useState<Player>("X");
   const [spaces, setSpaces] = React.useState<Cell[]>(Array(9).fill(null));
   const updatedSpaces = [...spaces];
   let boardClasses = "board";
@@ -18,7 +17,7 @@ export default function App() {
         player: turn,
         squares: winningSquares,
       };
-  }, [spaces]);
+  }, [spaces, turn]);
 
   function handleTurn(index: number) {
     updatedSpaces[index] = turn;
