@@ -76,3 +76,7 @@ export function getBestMove(board: Board, player: Player): number {
   const random = empties[Math.floor(Math.random() * empties.length)];
   return random;
 }
+
+export async function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
