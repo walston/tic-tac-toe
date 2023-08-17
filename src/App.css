@@ -51,6 +51,14 @@
   width: 50%;
   margin: 10px auto 0;
 }
+.player-select {
+  background: var(--dark);
+  color: var(--light);
+  text-transform: uppercase;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: 10px 10px 0;
+}
 
 /* TABLETS */
 @media screen and (max-width: 1080px) {

@@ -7,7 +7,9 @@ export default function App() {
   let boardClasses = "board";
   let message;
 
-  if (state.winning_player) {
+  if (!state.user) {
+    message = `Who will you play as?`;
+  } else if (state.winning_player) {
     boardClasses = "board game-over";
     message = `The Champion is ${state.winning_player}`;
   } else if (!state.spaces.includes(null) && state.winning_player === null) {
@@ -22,13 +24,6 @@ export default function App() {
 
   return (
     <div className="App">
-      {state.user === null ? (
-        <p>
-          Who will you play?
-          <button onClick={() => dispatch.choose_user("X")}>X</button>
-          <button onClick={() => dispatch.choose_user("O")}>O</button>
-        </p>
-      ) : null}
       <div className={boardClasses}>
         {state.spaces.map((value, index) => {
           const isWinningSquare = state.winning_squares?.includes(index);
@@ -47,9 +42,26 @@ export default function App() {
       </div>
       <div className="game-play">
         <div className="turns">{message}</div>
-        <button className="reset" onClick={() => dispatch.reset()}>
-          Reset game
-        </button>
+        {state.user ? (
+          <button className="reset" onClick={() => dispatch.reset()}>
+            Reset game
+          </button>
+        ) : (
+          <div>
+            <button
+              className="player-select"
+              onClick={() => dispatch.choose_user("X")}
+            >
+              X
+            </button>
+            <button
+              className="player-select"
+              onClick={() => dispatch.choose_user("O")}
+            >
+              O
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
