@@ -27,13 +27,21 @@ export default function App() {
       <div className={boardClasses}>
         {state.spaces.map((value, index) => {
           const isWinningSquare = state.winning_squares?.includes(index);
-          const canUserPlayHere = state.user === state.turn && value === null;
+          const canUserPlayHere =
+            state.user === null ||
+            (state.user === state.turn && value === null);
           return (
             <button
               className={isWinningSquare ? "square winner-declared" : "square"}
-              disabled={!(state.user && canUserPlayHere)}
+              disabled={!canUserPlayHere}
               key={index}
-              onClick={() => dispatch.user_play(index)}
+              onClick={() => {
+                if (state.user) dispatch.user_play(index);
+                else {
+                  dispatch.choose_user("X");
+                  dispatch.user_play(index);
+                }
+              }}
             >
               {catsGame ? (value === "X" ? "😾" : "🙀") : value}
             </button>
