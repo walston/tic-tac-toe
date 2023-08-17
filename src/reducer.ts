@@ -1,6 +1,6 @@
 import { checkBoard, getBestMove, pause } from "./utils";
 import { Player, Board } from "./types";
-import { useEffect, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 
 type State = {
   user: Player | null;
@@ -46,10 +46,10 @@ function reducer(state: State, action: Action): State {
     case "user_play": {
       if (!state.user) return state;
       if (state.winning_player) return state;
-      const { payload: index } = action;
-      const spaces = state.spaces.map((m, i) =>
-        i === index ? state.user : m
-      ) as Board;
+      const { payload: play } = action;
+      const spaces = state.spaces.map((already, index) =>
+        index === play ? state.user : already
+      );
       const winning_squares = checkBoard(spaces);
       return {
         ...state,
@@ -62,10 +62,10 @@ function reducer(state: State, action: Action): State {
     case "opponent_play": {
       if (!state.user) return state;
       if (state.winning_player) return state;
-      const index = getBestMove(state.spaces, opponent);
-      const spaces = state.spaces.map((m, i) =>
-        i === index ? opponent : m
-      ) as Board;
+      const best = getBestMove(state.spaces, opponent);
+      const spaces = state.spaces.map((already, index) =>
+        index === best ? opponent : already
+      );
       const winning_squares = checkBoard(spaces);
       return {
         ...state,
@@ -82,21 +82,21 @@ function reducer(state: State, action: Action): State {
 export function useAppState(): [State, Dispatcher] {
   const [state, dispatch] = useReducer(reducer, initialState);
   // prettier-ignore
-  const dispatcher = {
+  const dispatcher = useMemo(() => ({
     choose_user:    (payload: Player) => dispatch({ type: "choose_user", payload }),
     user_play:      (payload: number) => dispatch({ type: "user_play", payload }),
     opponent_play:  ()                => dispatch({ type: "opponent_play" }),
     reset:          ()                => dispatch({ type: "reset" }),
-  };
+  }), [dispatch]);
 
   // Automatically handle opponent plays
   useEffect(() => {
     if (!state.user) return;
     const opponent = state.user === "X" ? "O" : "X";
-    const firstMove = state.spaces.every((c) => c === null);
+    const firstMove = state.spaces.every((cell) => cell === null);
     if (state.turn === opponent)
       pause(firstMove ? 1 : 500).then(() => dispatcher.opponent_play());
-  }, [state.user, state.turn]);
+  }, [state.spaces, state.user, state.turn, dispatcher]);
 
   return [state, dispatcher];
 }
